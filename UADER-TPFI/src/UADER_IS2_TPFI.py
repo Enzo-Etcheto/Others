@@ -10,9 +10,6 @@ def main():
     uuid_cpu = uuid.getnode()         
     site_id = "UADER-FCyT-IS2"      
     
-    # Timestamp actual en formato legible
-    timestamp = datetime.now().isoformat()  
-
     # Instancias Singleton de CorporateData y CorporateLog
     print("Instanciando objetos:")
     corporate_data = CorporateData.getInstance()

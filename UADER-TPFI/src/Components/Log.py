@@ -3,9 +3,18 @@ import botocore
 from boto3.dynamodb.conditions import Key, Attr
 import uuid as uuid
 import datetime
+import logging  
 from botocore.exceptions import ClientError
 
+#Configuración del logger
+logger = logging.getLogger('CorporateLogLogger')
 
+#Función para habilitar el logger
+def enable_logging():
+    logger.setLevel(logging.DEBUG)
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.DEBUG)
+    logger.addHandler(console_handler)
 class Log:
     _instance = None
 
@@ -37,8 +46,10 @@ class Log:
 
         try:
             self.table.put_item(Item=log_item)
+            logger.debug(f"Operación registrada en el log: {log_item}")
             print(f"Operación registrada en el log: {log_item}")
         except botocore.exceptions.ClientError as e:
+            logger.error(f"Error al registrar en el log: {e.response['Error']['Message']}")
             print(f"Error al registrar en el log: {e.response['Error']['Message']}")
 
     def list(self, uuid_cpu, uuid=None):
@@ -55,5 +66,6 @@ class Log:
 
             return response.get('Items', [])
         except ClientError as e:
+            logger.error(f'Error al obtener los datos:{e.response["Error"]["Message"]}')
             print(e.response['Error']['Message'])
             return []

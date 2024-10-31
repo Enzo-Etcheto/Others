@@ -1,5 +1,5 @@
 import boto3
-from boto3.dynamodb.conditions import Key
+from boto3.dynamodb.conditions import Key, Attr
 import json
 import botocore
 import logging
@@ -117,10 +117,12 @@ class CorporateData:
         JSON con un mensaje de error."""
         logger.debug("Se llama a listCorporateData, id: {id}".format(id=id))
         try:
-            response = self.table.scan()
+            response = self.table.query(
+                KeyConditionExpression=Key('id').eq(id)
+            )
             return response.get('Items', [])
         except botocore.exceptions.ClientError as e:
-            logger.error(f'Error al obtener los datos:{str(e)}')
+            logger.error(f'Error al obtener los datos: {str(e)}')
             return json.dumps({"error": str(e)})
                
     def listCorporateLog(self, uuid_CPU):
@@ -129,11 +131,14 @@ class CorporateData:
         Luego, escanea la tabla y recupera todos los elementos.Si la operación tiene éxito, devuelve la 
         lista de elementos. Si hay un error, detecta la excepción ClientError y devuelve un objeto JSON 
         con el mensaje de error."""
+        self.dynamodb = boto3.resource('dynamodb')
+        self.table = self.dynamodb.Table('CorporateLog')
         logger.debug("Se llama a listCorporateLog, uuid_CPU: {uuid_CPU}".format(uuid_CPU=uuid_CPU))
         try:
-            corporate_log_table = self.dynamodb.Table('CorporateLog')
-            response = corporate_log_table.scan()
+            response = self.table.scan(
+                 FilterExpression=Attr('CPUid').eq(uuid_CPU)
+            )
             return response.get('Items', [])
         except botocore.exceptions.ClientError as e:
-            logger.error(f'Error al obtener los datos:{str(e)}')
+            logger.error(f'Error al obtener los datos: {str(e)}')
             return json.dumps({"error": str(e)})

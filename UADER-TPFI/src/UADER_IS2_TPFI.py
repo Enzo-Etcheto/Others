@@ -2,6 +2,7 @@ from Components.CorporateData import CorporateData
 from Components.CorporateLog import CorporateLog
 import uuid
 from datetime import datetime
+import json
 
 
 def main():
@@ -18,44 +19,60 @@ def main():
     # Llamada a getData
     print("Obteniendo datos:")
     data = corporate_data.getData(session_id, uuid_cpu, site_id)
-    print("Datos obtenidos:", data)
+    # Cargar el JSON y luego imprimirlo de manera legible
+    try:
+        formatted_data = json.loads(data)
+        print(json.dumps(formatted_data, indent=2, ensure_ascii=False))
+    except json.JSONDecodeError as e:
+        print(f"Ocurrió un error al decodificar el JSON: {str(e)}")
 
-    # Registrar operación con CorporateLog - método post
-    print("\nRegistrando operación en log:")
-    corporate_log.post(session_id, "getData")
+    # # Registrar operación con CorporateLog - método post
+    # print("\nRegistrando operación en log:")
+    # corporate_log.post(session_id, "getData")
 
     # Llamada a getCUIT
     print("\nObteniendo CUIT:")
     cuit_data = corporate_data.getCUIT(session_id, uuid_cpu, site_id)
-    print("CUIT:", cuit_data)
+    try:
+        formatted_data = json.loads(cuit_data)
+        print(json.dumps(formatted_data, indent=2, ensure_ascii=False))
+    except json.JSONDecodeError as e:
+        print(f"Ocurrió un error al decodificar el JSON: {str(e)}")
 
-    # Registrar operación con CorporateLog - método post
-    print("\nRegistrando operación en log:")
-    corporate_log.post(session_id, "getCUIT")
+    # # Registrar operación con CorporateLog - método post
+    # print("\nRegistrando operación en log:")
+    # corporate_log.post(session_id, "getCUIT")
 
     #Llamada a getSeqID
     print("\nObteniendo ID de secuencia:")
     seq_id = corporate_data.getSeqID(session_id, uuid_cpu, site_id)
-    print("ID de secuencia:", seq_id)
+    try:
+        formatted_data = json.loads(seq_id)
+        print(json.dumps(formatted_data, indent=2, ensure_ascii=False))
+    except json.JSONDecodeError as e:
+        print(f"Ocurrió un error al decodificar el JSON: {str(e)}")
 
-    # Registrar operación con CorporateLog - método post
-    print("\nRegistrando operación en log:")
-    corporate_log.post(session_id, "getSeqID")
+    # # Registrar operación con CorporateLog - método post
+    # print("\nRegistrando operación en log:")
+    # corporate_log.post(session_id, "getSeqID")
 
-    # # Listar registros con CorporateData
-    # print("\nListando registros CorporateData:")
-    # log_entries = corporate_data.listCorporateData(site_id)
-    # print("Entradas de log:", log_entries)
+    # Listar registros con CorporateData
+    print("\nListando registros CorporateData:")
+    log_entriesCorporateData = corporate_data.listCorporateData(site_id)
+    print("Entradas de log:", log_entriesCorporateData)
 
-    # # Listar registros con CorporateLog
-    # print("\nListando registros CorporateLog:")
-    # log_entries = corporate_data.listCorporateLog(uuid_cpu)
-    # print("Entradas de log:", log_entries)
+
+    # Listar registros con CorporateLog
+    print("\nListando registros CorporateLog:")
+    log_entriesCorporateLog = corporate_data.listCorporateLog(uuid_cpu)
+    print("Entradas de log:", log_entriesCorporateLog)
 
     # Consultar el log usando CorporateLog - método list
     print("\nConsultando registros en log:")
-    log_entries = corporate_log.list(uuid_cpu, session_id)
-    print("Entradas de log:", log_entries)
+    log_entriesList = corporate_log.list(uuid_cpu, session_id)
+    log_total = len(log_entriesList)
+    print("Total de entradas:", log_total)
+    print("Entradas de log:", log_entriesList)
 
 if __name__ == "__main__":
     main()

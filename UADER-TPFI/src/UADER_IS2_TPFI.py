@@ -43,14 +43,14 @@ def main():
     # print("\nRegistrando operación en log:")
     # corporate_log.post(session_id, "getCUIT")
 
-    #Llamada a getSeqID
-    print("\nObteniendo ID de secuencia:")
-    seq_id = corporate_data.getSeqID(session_id, uuid_cpu, site_id)
-    try:
-        formatted_data = json.loads(seq_id)
-        print(json.dumps(formatted_data, indent=2, ensure_ascii=False))
-    except json.JSONDecodeError as e:
-        print(f"Ocurrió un error al decodificar el JSON: {str(e)}")
+    # #Llamada a getSeqID
+    # print("\nObteniendo ID de secuencia:")
+    # seq_id = corporate_data.getSeqID(session_id, uuid_cpu, site_id)
+    # try:
+    #     formatted_data = json.loads(seq_id)
+    #     print(json.dumps(formatted_data, indent=2, ensure_ascii=False))
+    # except json.JSONDecodeError as e:
+    #     print(f"Ocurrió un error al decodificar el JSON: {str(e)}")
 
     # # Registrar operación con CorporateLog - método post
     # print("\nRegistrando operación en log:")
@@ -70,8 +70,6 @@ def main():
     # Consultar el log usando CorporateLog - método list
     print("\nConsultando registros en log:")
     log_entriesList = corporate_log.list(uuid_cpu, session_id)
-    log_total = len(log_entriesList)
-    print("Total de entradas:", log_total)
     print("Entradas de log:", log_entriesList)
 
 if __name__ == "__main__":

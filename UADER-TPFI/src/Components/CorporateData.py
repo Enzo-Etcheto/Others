@@ -111,16 +111,29 @@ class CorporateData:
             logger.error(f'Error al obtener los datos:{str(e)}')
             return json.dumps({"error": str(e)})
         
+    
+    @staticmethod
+    def decimal_default(obj):
+        if isinstance(obj, Decimal):
+            return float(obj)
+        raise TypeError
+    
     def listCorporateData(self, id):
         """Este método recupera todos los elementos de una tabla de DynamoDB y los devuelve como una lista. 
         Si se produce un error del cliente durante la operación, detecta la excepción y devuelve un objeto 
         JSON con un mensaje de error."""
         logger.debug("Se llama a listCorporateData, id: {id}".format(id=id))
+        
         try:
             response = self.table.query(
                 KeyConditionExpression=Key('id').eq(id)
             )
-            return response.get('Items', [])
+            items = response.get('Items', [])
+            
+            for item in items:
+                print(f"Entrada:\n{json.dumps(item, indent=2, default=self.decimal_default, ensure_ascii=False)}\n")
+            
+            return True
         except botocore.exceptions.ClientError as e:
             logger.error(f'Error al obtener los datos: {str(e)}')
             return json.dumps({"error": str(e)})
@@ -138,7 +151,12 @@ class CorporateData:
             response = self.table.scan(
                  FilterExpression=Attr('CPUid').eq(uuid_CPU)
             )
-            return response.get('Items', [])
+            items = response.get('Items', [])
+        
+            for item in items:
+                print(f"Entrada:\n{json.dumps(item, indent=2, default=self.decimal_default, ensure_ascii=False)}\n")
+                
+            return True
         except botocore.exceptions.ClientError as e:
             logger.error(f'Error al obtener los datos: {str(e)}')
             return json.dumps({"error": str(e)})

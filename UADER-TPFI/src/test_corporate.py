@@ -69,7 +69,54 @@ class TestCorporateComponents(unittest.TestCase):
         log_data = self.corporate_data.listCorporateLog(self.uuid_cpu)
         self.assertIsInstance(log_data, list, "La respuesta de listCorporateLog no es una lista")
 
+    # Pruebas adicionales
+    #9- test_getData_invalid_id: Verifica que getData retorne un error para un ID inexistente.
+    def test_getData_invalid_id(self):
+        """Prueba que getData retorne un error para un ID inexistente."""
+        invalid_id = "INVALID_ID"
+        result = self.corporate_data.getData(self.session_id, self.uuid_cpu, invalid_id)
+        self.assertIn("error", result, "No se encontró 'error' en la respuesta para ID inválido")
 
+    #10- test_getCUIT_invalid_id: Verifica que getCUIT retorne un error para un ID inexistente.
+    def test_getCUIT_invalid_id(self):
+        """Prueba que getCUIT retorne un error para un ID inexistente."""
+        invalid_id = "INVALID_ID"
+        cuit_data = self.corporate_data.getCUIT(self.session_id, self.uuid_cpu, invalid_id)
+        self.assertIn("error", cuit_data, "No se encontró 'error' en la respuesta para ID inválido")
+
+    #11- test_getSeqID_invalid_id: Verifica que getSeqID retorne un error para un ID inexistente.
+    def test_getSeqID_invalid_id(self):
+        """Prueba que getSeqID retorne un error para un ID inexistente."""
+        invalid_id = "INVALID_ID"
+        seq_id = self.corporate_data.getSeqID(self.session_id, self.uuid_cpu, invalid_id)
+        self.assertIn("error", seq_id, "No se encontró 'error' en la respuesta para ID inválido")
+
+    #12- test_dynamodb_connection_error: Simula un error de conexión para verificar el manejo de errores.
+    def test_dynamodb_connection_error(self):
+        """Prueba que los métodos manejen un error de conexión de DynamoDB."""
+        original_table = self.corporate_data.table
+        try:
+            # Configura una tabla de prueba inexistente para simular un fallo de conexión
+            self.corporate_data.table = self.corporate_data.dynamodb.Table('NonExistentTable')
+            result = self.corporate_data.getData(self.session_id, self.uuid_cpu, self.site_id)
+            self.assertIn("error", result, "No se encontró 'error' al simular un error de conexión")
+        finally:
+            # Restaura la tabla original para evitar efectos en otras pruebas
+            self.corporate_data.table = original_table
+
+    #13- test_log_post_entry: Verifica que post en CorporateLog registre una entrada con los datos correctos.
+    def test_log_post_entry(self):
+        """Prueba que post en CorporateLog registre una entrada con los datos correctos."""
+        self.corporate_log.post(self.session_id, "testMethod")
+        log_entries = self.corporate_log.list(self.uuid_cpu, self.session_id)
+        self.assertTrue(any(entry.get('method') == 'testMethod' for entry in log_entries),
+                        "No se encontró la entrada de log esperada para 'testMethod'")
+
+    #14- test_getData_missing_arg:
+    def test_getData_missing_argument(self):
+        """Prueba que getData maneje argumentos faltantes o vacíos."""
+        result = self.corporate_data.getData(self.session_id, self.uuid_cpu, "")
+        self.assertIn("error", result, "No se encontró 'error' en la respuesta para ID vacío")
 
 if __name__ == "__main__":
     os.system("cls" if os.name == 'nt' else "clear")  # Limpia la consola según el sistema operativo

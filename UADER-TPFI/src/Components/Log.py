@@ -54,30 +54,13 @@ class Log:
         except botocore.exceptions.ClientError as e:
             logger.error(f"Error al registrar en el log: {e.response['Error']['Message']}")
             print(f"Error al registrar en el log: {e.response['Error']['Message']}")
-
-    @staticmethod
-    def decimal_default(obj):
-        if isinstance(obj, Decimal):
-            return float(obj)
-        raise TypeError
+        
     def list(self, uuid_cpu, uuid=None):
-        """Este es un método llamado lista que recupera una lista de elementos de una tabla de DynamoDB.
-        Filtra los resultados para incluir solo elementos donde el atributo CPUid coincida con el valor 
-        uuid_cpu proporcionado. Si la operación tiene éxito, devuelve la lista de elementos; 
-        de lo contrario, detecta cualquier excepción de ClientError, imprime el mensaje de error y 
-        devuelve una lista vacía."""
+        logger.debug("Se llama a list, uuid_cpu: {uuid_cpu}, uuid: {uuid}".format(uuid_cpu=uuid_cpu, uuid=uuid))
         try:
-        
-            response = self.table.scan(
-                FilterExpression=Attr('CPUid').eq(uuid_cpu) 
-            )
+            response = self.table.scan(FilterExpression=Attr('CPUid').eq(uuid_cpu))
             items = response.get('Items', [])
-        
-            for item in items:
-                print(f"Entrada:\n{json.dumps(item, indent=2, default=self.decimal_default, ensure_ascii=False)}\n")
-                
-            return True
+            return items  
         except ClientError as e:
             logger.error(f'Error al obtener los datos:{e.response["Error"]["Message"]}')
-            print(e.response['Error']['Message'])
             return []

@@ -118,45 +118,32 @@ class CorporateData:
             return float(obj)
         raise TypeError
     
+
     def listCorporateData(self, id):
         """Este método recupera todos los elementos de una tabla de DynamoDB y los devuelve como una lista. 
-        Si se produce un error del cliente durante la operación, detecta la excepción y devuelve un objeto 
-        JSON con un mensaje de error."""
+    #     Si se produce un error del cliente durante la operación, detecta la excepción y devuelve un objeto 
+    #     JSON con un mensaje de error."""
         logger.debug("Se llama a listCorporateData, id: {id}".format(id=id))
-        
         try:
-            response = self.table.query(
-                KeyConditionExpression=Key('id').eq(id)
-            )
+            response = self.table.query(KeyConditionExpression=Key('id').eq(id))
             items = response.get('Items', [])
-            
-            for item in items:
-                print(f"Entrada:\n{json.dumps(item, indent=2, default=self.decimal_default, ensure_ascii=False)}\n")
-            
-            return True
+            return items 
         except botocore.exceptions.ClientError as e:
             logger.error(f'Error al obtener los datos: {str(e)}')
-            return json.dumps({"error": str(e)})
-               
+            return []
+
     def listCorporateLog(self, uuid_CPU):
         """Este fragmento de código define un método llamado listCorporateLog que toma un parámetro uuid_CPU.
-        Dentro del método, intenta recuperar una tabla denominada 'CorporateLog' de un recurso de DynamoDB. 
-        Luego, escanea la tabla y recupera todos los elementos.Si la operación tiene éxito, devuelve la 
-        lista de elementos. Si hay un error, detecta la excepción ClientError y devuelve un objeto JSON 
-        con el mensaje de error."""
-        self.dynamodb = boto3.resource('dynamodb')
-        self.table = self.dynamodb.Table('CorporateLog')
+    #     Dentro del método, intenta recuperar una tabla denominada 'CorporateLog' de un recurso de DynamoDB. 
+    #     Luego, escanea la tabla y recupera todos los elementos.Si la operación tiene éxito, devuelve la 
+    #     lista de elementos. Si hay un error, detecta la excepción ClientError y devuelve un objeto JSON 
+    #     con el mensaje de error."""
         logger.debug("Se llama a listCorporateLog, uuid_CPU: {uuid_CPU}".format(uuid_CPU=uuid_CPU))
         try:
-            response = self.table.scan(
-                 FilterExpression=Attr('CPUid').eq(uuid_CPU)
-            )
+            self.table = self.dynamodb.Table('CorporateLog')
+            response = self.table.scan(FilterExpression=Attr('CPUid').eq(uuid_CPU))
             items = response.get('Items', [])
-        
-            for item in items:
-                print(f"Entrada:\n{json.dumps(item, indent=2, default=self.decimal_default, ensure_ascii=False)}\n")
-                
-            return True
+            return items 
         except botocore.exceptions.ClientError as e:
             logger.error(f'Error al obtener los datos: {str(e)}')
-            return json.dumps({"error": str(e)})
+            return []

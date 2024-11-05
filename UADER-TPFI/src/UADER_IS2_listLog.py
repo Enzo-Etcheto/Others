@@ -2,11 +2,20 @@ import boto3
 from boto3.dynamodb.conditions import Key
 import json
 import botocore
-import uuid
+import logging
 from decimal import Decimal
 from Components.CorporateLog import CorporateLog
 from Components.Log import Log
 
+#Configuración del logger
+logger = logging.getLogger('CorporateDataLogger')
+
+#Funcion para habilitar el logger
+def enable_logging():
+    logger.setLevel(logging.DEBUG)
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.DEBUG)
+    logger.addHandler(console_handler)
 class UADER_IS2_listLog:
     def __init__(self):
             self.dynamodb = boto3.resource('dynamodb')
@@ -22,10 +31,12 @@ class UADER_IS2_listLog:
             Luego, escanea la tabla y recupera todos los elementos.Si la operación tiene éxito, devuelve la 
             lista de elementos. Si hay un error, detecta la excepción ClientError y devuelve un objeto JSON 
             con el mensaje de error."""
+            logger.debug("Se llama a listCorporateLog")
             try:
                 response = self.table.scan()
                 return response.get('Items', [])
             except botocore.exceptions.ClientError as e:
+                logger.error(f'Error al obtener los datos: {str(e)}')
                 return json.dumps({"error": str(e)})
 
 

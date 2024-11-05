@@ -1,7 +1,6 @@
 from Components.CorporateData import CorporateData
 from Components.CorporateLog import CorporateLog
 import uuid
-from datetime import datetime
 import json
 
 
@@ -19,7 +18,6 @@ def main():
     # Llamada a getData
     print("Obteniendo datos:")
     data = corporate_data.getData(session_id, uuid_cpu, site_id)
-    # Cargar el JSON y luego imprimirlo de manera legible
     try:
         formatted_data = json.loads(data)
         print(json.dumps(formatted_data, indent=2, ensure_ascii=False))
@@ -59,18 +57,20 @@ def main():
     # Listar registros con CorporateData
     print("\nListando registros CorporateData:")
     log_entriesCorporateData = corporate_data.listCorporateData(site_id)
-    print("Entradas de log:", log_entriesCorporateData)
+    log_entriesCorporateData_json = json.dumps(log_entriesCorporateData, indent=2, default=corporate_data.decimal_default, ensure_ascii=False)
+    print("Entradas de log:", log_entriesCorporateData_json)
 
 
     # Listar registros con CorporateLog
     print("\nListando registros CorporateLog:")
     log_entriesCorporateLog = corporate_data.listCorporateLog(uuid_cpu)
-    print("Entradas de log:", log_entriesCorporateLog)
-
+    log_entriesCorporateLog_json = json.dumps(log_entriesCorporateLog, indent=2, ensure_ascii=False, default=corporate_data.decimal_default)
+    print("Entradas de log:", log_entriesCorporateLog_json)
     # Consultar el log usando CorporateLog - método list
     print("\nConsultando registros en log:")
     log_entriesList = corporate_log.list(uuid_cpu, session_id)
-    print("Entradas de log:", log_entriesList)
+    log_entriesList_json = json.dumps(log_entriesList, indent=2, ensure_ascii=False, default=corporate_data.decimal_default)
+    print("Entradas de log:", log_entriesList_json)
 
 if __name__ == "__main__":
     main()

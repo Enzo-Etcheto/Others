@@ -58,9 +58,14 @@ class Log:
     def list(self, uuid_cpu, uuid=None):
         logger.debug("Se llama a list, uuid_cpu: {uuid_cpu}, uuid: {uuid}".format(uuid_cpu=uuid_cpu, uuid=uuid))
         try:
-            response = self.table.scan(FilterExpression=Attr('CPUid').eq(uuid_cpu))
+            if uuid:
+                filter_expression = Attr('session_id').eq(uuid)
+            else:
+                filter_expression = Attr('CPUid').eq(uuid_cpu)
+            
+            response = self.table.scan(FilterExpression=filter_expression)
             items = response.get('Items', [])
-            return items  
+            return items    
         except ClientError as e:
             logger.error(f'Error al obtener los datos:{e.response["Error"]["Message"]}')
             return []

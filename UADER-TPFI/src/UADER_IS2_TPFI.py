@@ -26,9 +26,9 @@ def main():
     except json.JSONDecodeError as e:
         print(f"Ocurrió un error al decodificar el JSON: {str(e)}")
 
-    # # Registrar operación con CorporateLog - método post
-    # print("\nRegistrando operación en log:")
-    # corporate_log.post(session_id, "getData")
+    # Registrar operación con CorporateLog - método post
+    print("\nRegistrando operación en log:")
+    corporate_log.post(session_id, "getData")
 
     # Llamada a getCUIT
     print("\nObteniendo CUIT:")
@@ -39,22 +39,22 @@ def main():
     except json.JSONDecodeError as e:
         print(f"Ocurrió un error al decodificar el JSON: {str(e)}")
 
-    # # Registrar operación con CorporateLog - método post
-    # print("\nRegistrando operación en log:")
-    # corporate_log.post(session_id, "getCUIT")
+    # Registrar operación con CorporateLog - método post
+    print("\nRegistrando operación en log:")
+    corporate_log.post(session_id, "getCUIT")
 
-    # #Llamada a getSeqID
-    # print("\nObteniendo ID de secuencia:")
-    # seq_id = corporate_data.getSeqID(session_id, uuid_cpu, site_id)
-    # try:
-    #     formatted_data = json.loads(seq_id)
-    #     print(json.dumps(formatted_data, indent=2, ensure_ascii=False))
-    # except json.JSONDecodeError as e:
-    #     print(f"Ocurrió un error al decodificar el JSON: {str(e)}")
+    #Llamada a getSeqID
+    print("\nObteniendo ID de secuencia:")
+    seq_id = corporate_data.getSeqID(session_id, uuid_cpu, site_id)
+    try:
+        formatted_data = json.loads(seq_id)
+        print(json.dumps(formatted_data, indent=2, ensure_ascii=False))
+    except json.JSONDecodeError as e:
+        print(f"Ocurrió un error al decodificar el JSON: {str(e)}")
 
-    # # Registrar operación con CorporateLog - método post
-    # print("\nRegistrando operación en log:")
-    # corporate_log.post(session_id, "getSeqID")
+    # Registrar operación con CorporateLog - método post
+    print("\nRegistrando operación en log:")
+    corporate_log.post(session_id, "getSeqID")
 
     # Listar registros con CorporateData
     print("\nListando registros CorporateData:")

@@ -48,8 +48,9 @@ class Log:
 
         try:
             self.table.put_item(Item=log_item)
-            logger.debug(f"Operación registrada en el log: {log_item}")
-            print(f"Operación registrada en el log: {log_item}")
+            log_item_json = json.dumps(log_item, indent=2, ensure_ascii=False)
+            logger.debug(f"Operación registrada en el log: {log_item_json}")
+            print(f"Operación registrada en el log: {log_item_json}")
         except botocore.exceptions.ClientError as e:
             logger.error(f"Error al registrar en el log: {e.response['Error']['Message']}")
             print(f"Error al registrar en el log: {e.response['Error']['Message']}")

@@ -13,7 +13,7 @@ def enable_logging():
     console_handler.setLevel(logging.DEBUG)
     logger.addHandler(console_handler)
 class UADER_IS2_listCorporateData:
-    def __init__(self):
+    def __init__(self):        
         self.dynamodb = boto3.resource('dynamodb')
         self.table = self.dynamodb.Table('CorporateData')
     

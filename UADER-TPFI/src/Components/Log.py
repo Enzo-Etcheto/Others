@@ -35,11 +35,9 @@ class Log:
         y una marca de tiempo, y luego intenta agregarlo a la tabla. Si tiene éxito, imprime un mensaje 
         de éxito; de lo contrario, detecta el error e imprime un mensaje de error."""
         timestamp = datetime.datetime.now().isoformat()
-        cpu_id = uuid.getnode()
-        unique_id = str(uuid.uuid4())  
+        cpu_id = uuid.getnode() 
 
         log_item = {
-            'id': unique_id,
             'session_id': uuid_session,
             'CPUid': cpu_id,
             'method': method_name,

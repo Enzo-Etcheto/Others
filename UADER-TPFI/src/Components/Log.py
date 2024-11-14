@@ -36,8 +36,10 @@ class Log:
         de éxito; de lo contrario, detecta el error e imprime un mensaje de error."""
         timestamp = datetime.datetime.now().isoformat()
         cpu_id = uuid.getnode() 
+        uniqueID=str(uuid.uuid4())
 
         log_item = {
+            'id': uniqueID,
             'session_id': uuid_session,
             'CPUid': cpu_id,
             'method': method_name,
